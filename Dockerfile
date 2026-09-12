@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Install system dependencies & SQLite extension
+# Install system dependencies, SQLite, Nginx, Node.js, & NPM
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -11,7 +11,9 @@ RUN apt-get update && apt-get install -y \
     unzip \
     sqlite3 \
     libsqlite3-dev \
-    nginx
+    nginx \
+    nodejs \
+    npm
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -28,8 +30,11 @@ WORKDIR /app
 # Copy project files
 COPY . .
 
-# Install dependencies
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Install NPM dependencies & build assets (Tailwind/Vite)
+RUN npm install && npm run build
 
 # Setup permissions & bootstrap storage
 RUN mkdir -p /app/storage/framework/cache /app/storage/framework/sessions /app/storage/framework/views /app/storage/logs /app/bootstrap/cache \
