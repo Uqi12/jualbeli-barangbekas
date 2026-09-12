@@ -7,9 +7,8 @@ use App\Http\Controllers\ChoiceController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// Arahkan halaman utama langsung ke katalog barang (BuyController)
+Route::get('/', [BuyController::class, 'index'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
 
