@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Install system dependencies & SQLite extension
+# Install system dependencies & SQLite
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -13,25 +13,22 @@ RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     nginx
 
-# Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd
 
-# Get latest Composer
+# Get Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /app
 
-# Copy project files
 COPY . .
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Setup permissions & bootstrap storage
+# Setup permissions
 RUN mkdir -p /app/storage/framework/cache /app/storage/framework/sessions /app/storage/framework/views /app/storage/logs /app/bootstrap/cache \
     && chmod -R 777 /app/storage /app/bootstrap/cache
 
