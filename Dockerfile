@@ -34,4 +34,4 @@ RUN mkdir -p /app/storage/framework/cache /app/storage/framework/sessions /app/s
 
 EXPOSE 8080
 
-CMD sh -c "mkdir -p /app/database && touch /app/database/database.sqlite && chmod 777 /app/database/database.sqlite && php artisan migrate --force && php artisan config:clear && php artisan cache:clear && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"
+CMD sh -c "mkdir -p /app/database /app/storage/framework/cache /app/storage/framework/sessions /app/storage/framework/views /app/storage/logs && touch /app/database/database.sqlite && chmod -R 777 /app/database /app/storage /app/bootstrap/cache && php artisan migrate --force && php artisan config:clear && php artisan cache:clear && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"
