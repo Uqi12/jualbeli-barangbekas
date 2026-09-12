@@ -7,9 +7,16 @@ use App\Http\Controllers\ChoiceController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
-// Arahkan halaman utama langsung ke katalog barang (BuyController)
+// Halaman Utama & Katalog (Bisa diakses Publik)
 Route::get('/', [BuyController::class, 'index'])->name('home');
 
+Route::prefix('buy')->name('buy.')->group(function () {
+    Route::get('/', [BuyController::class, 'index'])->name('index');
+    Route::get('/category/{category:slug}', [BuyController::class, 'byCategory'])->name('category');
+    Route::get('/product/{product}', [BuyController::class, 'show'])->name('show');
+});
+
+// Fitur yang Wajib Login
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/choice', [ChoiceController::class, 'index'])->name('choice');
@@ -19,12 +26,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/create', [ProductController::class, 'create'])->name('create');
         Route::post('/', [ProductController::class, 'store'])->name('store');
         Route::get('/my-products', [ProductController::class, 'myProducts'])->name('my-products');
-    });
-
-    Route::prefix('buy')->name('buy.')->group(function () {
-        Route::get('/', [BuyController::class, 'index'])->name('index');
-        Route::get('/category/{category:slug}', [BuyController::class, 'byCategory'])->name('category');
-        Route::get('/product/{product}', [BuyController::class, 'show'])->name('show');
     });
 
     Route::prefix('cart')->name('cart.')->group(function () {
